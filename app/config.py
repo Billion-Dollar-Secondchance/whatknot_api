@@ -14,6 +14,5 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = f".env.{ENV}"
-        extra = "forbid"   # will now accept exactly these four
-
+        extra = "forbid"   
 settings = Settings()
