@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     DEBUG: bool = False
 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str  
+
     class Config:
         env_file = f".env.{ENV}"
         extra = "forbid"   
