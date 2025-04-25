@@ -8,11 +8,20 @@ venv/
 env/
 .venv/
 .env/
+.env.*
+!.env.example
 
 # Environment files
 .env
-.env.*
-!.env.example  # Keep a sample template for others to copy
+.env.production
+.env.staging
+
+# Alembic
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# You DO want to keep your migration scripts:
+# DO NOT ignore alembic/versions/*.py
 
 # Distribution / packaging
 build/
@@ -31,8 +40,6 @@ var/
 *.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
