@@ -11,20 +11,6 @@ IST = pytz.timezone("Asia/Kolkata")
 class User(Base):
     __tablename__ = "users"
 
-    # user_id = Column(String, primary_key=True, index=True)  # wk_000001 style
-    # email = Column(String, unique=True, index=True, nullable=True)
-    # hashed_password = Column(String, nullable=True)
-    # login_type = Column(String, nullable=False)  # 'email', 'google', 'guest'
-    # guest_token = Column(String, unique=True, nullable=True)
-    # name = Column(String, nullable=True) 
-    # vibe_as = Column(String, nullable=True)
-    # is_active = Column(Boolean, default=True)
-    # profile_image = Column(String)
-    # gender = Column(String)
-    # date_of_birth = Column(Date)
-    # google_id = Column(String, unique=True)
-    # created_at = Column(DateTime(timezone=True), server_default=func.now())
-
     user_id = Column(String, primary_key=True, index=True)  # wk_000001 style
     email = Column(String, unique=True, index=True, nullable=True)
     hashed_password = Column(String, nullable=True)
@@ -40,6 +26,8 @@ class User(Base):
 
     vibe_as = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
+    pairing_code = Column(String(6), unique=True, nullable=True)
+    pairing_status = Column(String, nullable=False, server_default="single")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     @property

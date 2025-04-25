@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy.orm import Session
 from app.db.models.user import User, generate_incremental_user_id
 from app.utils.auth import get_password_hash
@@ -81,3 +82,31 @@ def create_google_user(
     db.commit()
     db.refresh(user)
     return user
+
+def update_user_profile(
+    db: Session,
+    user: User,
+    vibe_as: str = None,
+    gender: str = None,
+    date_of_birth: date = None
+) -> User:
+    if vibe_as is not None:
+        user.vibe_as = vibe_as
+    if gender is not None:
+        user.gender = gender
+    if date_of_birth is not None:
+        user.date_of_birth = date_of_birth
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+def get_user_by_id(db: Session, user_id: str) -> User | None:
+    return db.query(User).filter(User.user_id == user_id).first()
+
+def get_user_by_pairing_code(db: Session, code: str) -> User | None:
+    return db.query(User).filter(User.pairing_code == code).first()
+
+def update_pairing_status(db: Session, user_id: str, status: str) -> None:
+    db.query(User).filter(User.user_id == user_id).update({"pairing_status": status})
+    db.commit()

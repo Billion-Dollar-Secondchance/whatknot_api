@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_serializer
-from typing import Optional, Literal
-from datetime import datetime
+from typing import Optional, Literal, Union, Any
+from datetime import datetime,date
 import pytz
 
 IST = pytz.timezone("Asia/Kolkata")
@@ -58,7 +58,26 @@ class UserOut(BaseModel):
         ist_dt = v.astimezone(IST)
         return ist_dt.strftime("%d-%m-%Y %I:%M:%S %p IST")
 
+class UserUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    profile_image: Optional[str] = None
+    gender: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    vibe_as: Optional[str] = None  # ← Add this
+
 class WrappedResponse(BaseModel):
     status: Literal["success", "failure"]
     message: str
-    data: Optional[LoginResponse] = None
+    data: Optional[Any] = None
+    # data: Optional[LoginResponse] = None
+
+class UpdateUserSchema(BaseModel):
+    name: Optional[str]
+    profile_image: Optional[str]
+    gender: Optional[str]
+    date_of_birth: Optional[date]
+    vibe_as: Optional[str]
+
+    class Config:
+        orm_mode = True
