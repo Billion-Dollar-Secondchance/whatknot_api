@@ -10,7 +10,12 @@ from app.api.routes import user,pairing
 
 app = FastAPI(debug=settings.DEBUG)
 
-app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+# app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SECRET_KEY,
+    session_cookie="whatknot_session"
+)
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(auth_google.router, prefix="/oauth", tags=["Google OAuth"]) 

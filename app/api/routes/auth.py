@@ -36,7 +36,6 @@ def get_db():
 async def guest_login(request: Request, db: Session = Depends(get_db)):
     body = await request.json()
     device_id = body.get("device_id")
-
     if not device_id:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,

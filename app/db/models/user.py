@@ -16,7 +16,7 @@ class User(Base):
     hashed_password = Column(String, nullable=True)
     login_type = Column(String, nullable=False)  # 'email', 'google', 'guest'
     guest_token = Column(String, unique=True, nullable=True)
-
+    device_id = Column(String, nullable=False) 
     # new Google fields:
     name = Column(String, nullable=True)
     profile_image = Column(String, nullable=True)
@@ -53,3 +53,4 @@ def generate_incremental_user_id(db: Session):
         last_num = 0
 
     return f"wk_{last_num + 1:06d}"
+

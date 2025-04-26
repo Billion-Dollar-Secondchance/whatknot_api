@@ -34,48 +34,15 @@ def get_db():
 @router.get("/google-login")
 async def google_login(request: Request):
     redirect_uri = settings.GOOGLE_REDIRECT_URI
+    request.session["custom_debug_state"] = "check_this"
+    print("Session set:", request.session)
     print("Redirect URI:", redirect_uri) 
+    print("GOOGLE_CLIENT_ID:", settings.GOOGLE_CLIENT_ID)
     return await oauth.google.authorize_redirect(request, redirect_uri)
-
-# --- Step 2: Callback Handler ---
-# @router.get("/google-auth")
-# async def google_auth(request: Request, db: Session = Depends(get_db)):
-#     try:
-#         token = await oauth.google.authorize_access_token(request)
-#         resp = await oauth.google.get('userinfo', token=token)
-#         user_info = resp.json()
-#     except Exception as e:
-#         print("Google OAuth Error:", str(e)) 
-#         return JSONResponse(
-#             status_code=status.HTTP_400_BAD_REQUEST,
-#             content={"status": "failure", "message": "Google authentication failed", "data": None}
-#         )
-
-#     # Create or fetch the user in your DB
-#     user = get_or_create_google_user(
-#         db,
-#         email=user_info["email"],
-#         name=user_info.get("name"),
-#         vibe_as=None,
-#         guest_token=None
-#     )
-
-#     # Issue your JWT
-#     jwt = create_token(user)
-#     login_data = LoginResponse(
-#         access_token=jwt,
-#         token_type="bearer",
-#         user=UserResponse.model_validate(user)
-#     )
-
-#     return WrappedResponse(
-#         status="success",
-#         message="Google login successful",
-#         data=login_data
-#     )
 
 @router.get("/google-auth")
 async def google_auth(request: Request, db: Session = Depends(get_db)):
+    print("Session received:", request.session)  # should contain 'state' key
     try:
         token = await oauth.google.authorize_access_token(request)
 
@@ -106,7 +73,7 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
 
     jwt = create_token(user)
     login_data = LoginResponse(
-        access_token=jwt,
+        access_token='Bearer '+jwt,
         token_type="bearer",
         user=UserResponse.model_validate(user)
     )

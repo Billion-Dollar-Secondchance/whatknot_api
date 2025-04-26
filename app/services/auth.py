@@ -124,21 +124,25 @@ def create_google_user(
     return user
 
 def get_or_create_guest_user(db: Session, device_id: str) -> User:
-    user = db.query(User).filter(User.device_id == device_id).first()
+    # look up by your existing guest_token column
+    user = db.query(User).filter(User.guest_token == device_id).first()
+    if user:
+        return user
 
-    if not user:
-        # Create new guest user if not found
-        user = User(
-            user_id=generate_incremental_user_id(db),
-            device_id=device_id,
-            is_guest=True  # Assuming `is_guest` exists in your User model
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-
+    # create a brand-new guest user
+    user = User(
+        user_id=generate_incremental_user_id(db),
+        login_type="guest",
+        device_id=device_id,
+        guest_token=device_id,
+        vibe_as=None,        # or whatever your default is
+        is_active=True       # assuming you have this field
+        # CREATED_AT will be autofilled by your model’s server_default
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
     return user
-
 def update_user_details(
     db: Session,
     user: User,
