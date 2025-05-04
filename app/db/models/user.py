@@ -16,7 +16,7 @@ class User(Base):
     hashed_password = Column(String, nullable=True)
     login_type = Column(String, nullable=False)  # 'email', 'google', 'guest'
     guest_token = Column(String, unique=True, nullable=True)
-    device_id = Column(String, nullable=False) 
+    device_id = Column(String, nullable=True) 
     # new Google fields:
     name = Column(String, nullable=True)
     profile_image = Column(String, nullable=True)
@@ -29,6 +29,7 @@ class User(Base):
     pairing_code = Column(String(6), unique=True, nullable=True)
     pairing_status = Column(String, nullable=False, server_default="single")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    role = Column(String, nullable=True, default="user")
 
     @property
     def created_at_ist(self):

@@ -18,3 +18,4 @@ class WrappedPairingResponse(BaseModel):
     status: Literal["success", "failure"]
     message: str
     data: Optional[PairingResponse] = None
+

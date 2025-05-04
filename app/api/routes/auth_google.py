@@ -4,8 +4,9 @@ from authlib.integrations.starlette_client import OAuth
 from sqlalchemy.orm import Session
 from app.config import settings
 from app.db.session import SessionLocal
-from app.services.auth import get_or_create_google_user, create_token
+from app.services.auth import get_or_create_google_user
 from app.schemas.user import UserResponse, LoginResponse, WrappedResponse
+from app.core.security import create_access_token  # Ensure this is the correct path
 
 router = APIRouter()
 
@@ -36,22 +37,16 @@ async def google_login(request: Request):
     redirect_uri = settings.GOOGLE_REDIRECT_URI
     request.session["custom_debug_state"] = "check_this"
     print("Session set:", request.session)
-    print("Redirect URI:", redirect_uri) 
-    print("GOOGLE_CLIENT_ID:", settings.GOOGLE_CLIENT_ID)
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
+# --- Step 2: Google Callback & Token Generation ---
 @router.get("/google-auth")
 async def google_auth(request: Request, db: Session = Depends(get_db)):
-    print("Session received:", request.session)  # should contain 'state' key
     try:
         token = await oauth.google.authorize_access_token(request)
-
-        # Use OpenID-compliant endpoint for more complete user info
         resp = await oauth.google.get('https://www.googleapis.com/oauth2/v3/userinfo', token=token)
         user_info = resp.json()
-
         print("User Info from Google:", user_info)
-
     except Exception as e:
         print("Google OAuth Error:", str(e))
         return JSONResponse(
@@ -64,16 +59,21 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
         email=user_info["email"],
         name=user_info.get("name"),
         profile_image=user_info.get("picture"),
-        gender=user_info.get("gender"),  # Note: Might not be returned by Google anymore
-        date_of_birth=None,              # Google login usually doesn't provide DOB
-        google_id=user_info.get("sub"),  # 'sub' is the unique identifier from Google
+        gender=user_info.get("gender"),
+        date_of_birth=None,
+        google_id=user_info.get("sub"),
         vibe_as=None,
         guest_token=None
     )
 
-    jwt = create_token(user)
+    # ✅ Include role in token payload
+    jwt = create_access_token(data={
+        "sub": user.user_id,
+        "role": user.role
+    })
+
     login_data = LoginResponse(
-        access_token='Bearer '+jwt,
+        access_token='Bearer ' + jwt,
         token_type="bearer",
         user=UserResponse.model_validate(user)
     )
@@ -83,3 +83,5 @@ async def google_auth(request: Request, db: Session = Depends(get_db)):
         message="Google login successful",
         data=login_data
     )
+
+

@@ -21,7 +21,7 @@ from app.crud.user import (
 )
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 15 * 24 * 60
 
 def create_user(
     db: Session,
@@ -170,21 +170,42 @@ def update_user_details(
     db.refresh(user)
     return user
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+# def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Could not validate credentials",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     try:
+#         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+#         user_id: str = payload.get("sub")
+#         if user_id is None:
+#             raise credentials_exception
+#     except JWTError:
+#         raise credentials_exception
+
+#     user = db.query(User).filter(User.user_id == user_id).first()
+#     if user is None:
+#         raise credentials_exception
+#     return user
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
     except JWTError:
-        raise credentials_exception
+        raise HTTPException(401, "Invalid token")
+
+    user_id: str = payload.get("sub")
+    role: str = payload.get("role")  # ← pull role claim
+    print("role")
+    if not user_id:
+        raise HTTPException(401, "Invalid token payload")
 
     user = db.query(User).filter(User.user_id == user_id).first()
-    if user is None:
-        raise credentials_exception
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    # Attach the role from the token onto the SQLAlchemy object so your guard can see it:
+    setattr(user, "role", role)
     return user
+
