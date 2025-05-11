@@ -61,3 +61,11 @@ class MysteryMoodbox(Base):
     prompted_user_id = Column(String, ForeignKey("public.users.user_id", ondelete="CASCADE"), nullable=False)
     guesser_id = Column(String, ForeignKey("public.users.user_id", ondelete="SET NULL"), nullable=True)
 
+class MysteryMoodboxDateMapping(Base):
+    __tablename__ = "mystery_moodbox_date_mapping"
+
+    mapping_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("mystery_moodbox_questions.question_id"), nullable=False)
+    scheduled_date = Column(Date, nullable=False)
+    created_at = Column(DateTime, default=func.now())
+

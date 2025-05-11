@@ -12,6 +12,10 @@ import app.db.models  # Triggers app/db/models/__init__.py
 from app.api.routes import auth, auth_google
 from app.api.routes import user, pairing, mystery_moodbox, admin_moodbox,prompt_question,mystery_moodbox_prompted_question
 from app.api.routes import badges
+from app.api.routes.earned_badges import router as earned_badges_router
+from app.api.routes import streak
+from app.api.routes import admin_vibe
+from app.api.routes import vibe_match
 
 app = FastAPI(debug=settings.DEBUG)
 
@@ -32,9 +36,15 @@ app.include_router(
     prefix="/admin",
     tags=["Admin Moodbox"]
 )
-# app.include_router(prompt_question.router, prefix="/mystery-moodbox")
 app.include_router(mystery_moodbox_prompted_question.router, prefix="/mystery-moodbox", tags=["Prompted Questions"])
 app.include_router(prompt_question.router, prefix="/mystery-moodbox")
-
 app.include_router(badges.router, tags=["Badges"])
+app.include_router(earned_badges_router, prefix="/mystery-moodbox")
+app.include_router(streak.router, prefix="/mystery-moodbox", tags=["Streak"])
+app.include_router(admin_vibe.router,prefix="/admin", tags=["Admin Vibe Match"])
+app.include_router(vibe_match.router, prefix="/vibe-match", tags=["Vibe Match"])
+
+
+
+
 

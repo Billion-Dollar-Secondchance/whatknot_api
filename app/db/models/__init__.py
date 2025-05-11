@@ -7,6 +7,6 @@ from .day_question_mapping import DayQuestionMapping
 from .user import User
 from .partner_pairing import PartnerPairing
 from .mystery_moodbox_prompted_questions import MysteryMoodboxPromptedQuestion
-
+from .vibe_match import VibeQuestion, VibeMatch, VibeMatchResponse, VibeQuestionDayMapping, VibeQuestionDateMapping
 
 Base.metadata.create_all(bind=engine)
