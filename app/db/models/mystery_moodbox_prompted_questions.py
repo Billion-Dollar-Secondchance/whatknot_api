@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, ForeignKey, TIMESTAMP, Enum,Text,Boolean
+from sqlalchemy import Column, String, ForeignKey, TIMESTAMP, Enum,Text,Boolean,DateTime,Date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.db.base import Base
@@ -39,3 +39,17 @@ class SubmitPromptResponse(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+class MysteryMoodboxDateMapping(Base):
+    __tablename__ = "mystery_moodbox_date_mapping"
+
+    mapping_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("mystery_moodbox_questions.question_id"), nullable=False)
+    scheduled_date = Column(Date, nullable=False)
+    pair_days_condition = Column(String, nullable=False)  # "<3", "=1", etc
+    created_at = Column(DateTime, default=func.now())
+
+
+
+
+
