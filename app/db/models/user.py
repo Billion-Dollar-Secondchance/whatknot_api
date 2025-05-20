@@ -30,6 +30,7 @@ class User(Base):
     pairing_status = Column(String, nullable=False, server_default="single")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     role = Column(String, nullable=True, default="user")
+    interested_in = Column(String, nullable=True)
 
     @property
     def created_at_ist(self):

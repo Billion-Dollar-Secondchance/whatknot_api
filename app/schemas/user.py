@@ -64,7 +64,8 @@ class UserUpdateRequest(BaseModel):
     profile_image: Optional[str] = None
     gender: Optional[str] = None
     date_of_birth: Optional[str] = None
-    vibe_as: Optional[str] = None  # ← Add this
+    vibe_as: Optional[str] = None  
+    interested_in: Optional[str] = None
 
 class WrappedResponse(BaseModel):
     status: Literal["success", "failure"]
@@ -78,6 +79,7 @@ class UpdateUserSchema(BaseModel):
     gender: Optional[str]
     date_of_birth: Optional[date]
     vibe_as: Optional[str]
+    interested_in: Optional[str]
 
     class Config:
         orm_mode = True
