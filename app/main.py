@@ -14,7 +14,7 @@ from app.api.routes import user, pairing, mystery_moodbox, admin_moodbox,prompt_
 from app.api.routes import badges
 from app.api.routes.earned_badges import router as earned_badges_router
 from app.api.routes import streak
-from app.api.routes import admin_vibe
+from app.api.routes import admin_vibe,user_relationship_settings,single_pairing
 from app.api.routes import vibe_match,admin_single_vibe,admin_single_prompts,admin_single_prompt_schedule,vibe_single_prompt_today,single_vibe_prompt_response
 
 app = FastAPI(debug=settings.DEBUG)
@@ -48,6 +48,9 @@ app.include_router(admin_single_prompts.router, prefix="/admin", tags=["Admin si
 app.include_router(admin_single_prompt_schedule.router, prefix="/admin", tags=["Admin single Vibe Match"])
 app.include_router(vibe_single_prompt_today.router, prefix="/single", tags=["single Vibe Match"])
 app.include_router(single_vibe_prompt_response.router, prefix="/single", tags=["single Vibe response"])
+app.include_router(user_relationship_settings.router, prefix="/settings", tags=["user settings"])
+app.include_router(single_pairing.router, prefix="/singles", tags=["Pairing"])
+
 
 
 

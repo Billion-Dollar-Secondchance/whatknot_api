@@ -8,5 +8,8 @@ from .user import User
 from .partner_pairing import PartnerPairing
 from .mystery_moodbox_prompted_questions import MysteryMoodboxPromptedQuestion
 from .vibe_match import VibeQuestion, VibeMatch, VibeMatchResponse, VibeQuestionDayMapping, VibeQuestionDateMapping
+from .single_vibe_matched_pairs import SingleVibeMatchedPair
+from .user_relationship_settings import UserRelationshipSettings
+from .single_vibe_paired_users import SingleVibePairedUser
 
 Base.metadata.create_all(bind=engine)

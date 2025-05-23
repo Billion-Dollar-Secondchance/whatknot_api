@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_serializer
-from typing import Optional, Literal, Union, Any
+from typing import Optional, Literal, Union, Any,List
 from datetime import datetime,date
 import pytz
 
@@ -66,6 +66,15 @@ class UserUpdateRequest(BaseModel):
     date_of_birth: Optional[str] = None
     vibe_as: Optional[str] = None  
     interested_in: Optional[str] = None
+    mobile_number: Optional[str] = None
+    height: Optional[str] = None
+    audio_intro: Optional[str] = None
+    video_intro: Optional[str] = None
+    image_gallery: Optional[List[str]] = None
+    vibe_keywords: Optional[List[str]] = None
+    education: Optional[str] = None
+    location: Optional[str] = None
+    relationship_goal: Optional[str] = None
 
 class WrappedResponse(BaseModel):
     status: Literal["success", "failure"]

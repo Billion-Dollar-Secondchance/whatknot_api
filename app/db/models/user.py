@@ -31,6 +31,16 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     role = Column(String, nullable=True, default="user")
     interested_in = Column(String, nullable=True)
+    vibe_keywords = Column(String, nullable=True)  # "Empathetic,Curious"
+    education = Column(String, nullable=True)
+    location = Column(String, nullable=True)
+    relationship_goal = Column(String, nullable=True)  # Long-term, Exploring
+    onboarded = Column(Boolean, default=False)
+    height = Column(String, nullable=True)
+    audio_intro = Column(String, nullable=True)  # URL to uploaded audio
+    video_intro = Column(String, nullable=True)  # URL to uploaded video
+    image_gallery = Column(String, nullable=True)  # Comma-separated image URLs
+    mobile_number = Column(String, nullable=True, unique=False)
 
     @property
     def created_at_ist(self):
